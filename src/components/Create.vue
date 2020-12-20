@@ -41,20 +41,36 @@ export default {
       }
   },
   methods: {
-      addProduct() {
+        addProduct() {
            let uri = 'http://localhost:8000/api/auth/product';
-            this.axios.post(uri, this.product).then((response) => {
-                console.log(response.data)
+           let jwttoken = localStorage.getItem('token')
+           
+            this.axios.post(uri, this.product, {headers: {
+                'Authorization': `Bearer ${jwttoken}`
+            }
+            }).then((response) => {
+                console.log("Success: ", response.data)
+                this.product = {}
+                this.$router.push({ name: 'Index'});
+            }).catch( (err) => {
+                console.log("Error: ", err.response.data.errors)
             });
         },
         
         onChange(e) {
-            const file = e.target.files[0]
-            this.image = file
-            this.product.image = this.image
-            this.imageUrl = URL.createObjectURL(file)
-            console.log(this.product)
-        }
+            let files = e.target.files || e.dataTransfer.files;
+            if (!files.length)
+                return;
+            this.createImage(files[0]);
+        },
+        createImage(file) {
+            let reader = new FileReader();
+            let vm = this;
+            reader.onload = (e) => {
+                vm.product.image = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
     }
 }
 </script>

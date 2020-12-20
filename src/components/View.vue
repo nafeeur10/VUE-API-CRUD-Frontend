@@ -2,11 +2,11 @@
   <div class="container">
     <div class="card">
       <div class="card-header">
-        {{ product.title }}
+        {{ product.name }}
       </div>
       <div class="card-body">
         {{ product.description }}
-        {{ product.image }}
+        <img :src="product.image" alt="" class="img-fluid">
       </div>
       <div class="card-footer">
         Price: {{ product.price }}
